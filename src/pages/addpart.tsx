@@ -37,6 +37,7 @@ const Questionnaire = () => {
   // Agora, em vez de lidar diretamente com o evento de clique, criaremos uma função para acionar o clique no input
 const openDropzone = () => {
   if (dropzoneInputRef.current) {
+        //@ts-ignore
     dropzoneInputRef.current.click();
   }
 };
