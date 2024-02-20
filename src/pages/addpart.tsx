@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Heading, Text, Button, Container, Stack, Icon } from '@chakra-ui/react';
 import { ChevronLeftIcon, DeleteIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
 import { useDropzone } from 'react-dropzone';
@@ -31,7 +31,15 @@ const Questionnaire = () => {
       setIsComplete(true);
     }
   };
+
+  const dropzoneInputRef = useRef(null);
   
+  // Agora, em vez de lidar diretamente com o evento de clique, criaremos uma função para acionar o clique no input
+const openDropzone = () => {
+  if (dropzoneInputRef.current) {
+    dropzoneInputRef.current.click();
+  }
+};
 
   const handleBack = () => {
     if (currentQuestionIndex > 0) {
@@ -95,8 +103,6 @@ const Questionnaire = () => {
   };
 
   const handleFinishQuestionnaire = () => {
-    // Implemente a lógica para concluir o questionário
-    // Isso pode incluir o redirecionamento para outra página ou a execução de outras ações necessárias
     console.log('Questionário concluído!');
   };
 
@@ -208,20 +214,22 @@ const Questionnaire = () => {
                 // Adição da lógica para a pergunta 4 (fotos)
                 <>
                   <div {...getRootProps()} style={{ textAlign: 'center', padding: '1rem', border: '2px dashed #CBD5E0', borderRadius: '0.25rem' }}>
-                    <input
-                      {...getInputProps()}
-                      onChange={(event) => {
-                        const files = event.target.files;
-                        //@ts-ignore
-                        const filesWithBase64 = Array.from(files).map(file => ({
-                          path: file.name,
-                          base64: URL.createObjectURL(file)
-                        }));
-                        //@ts-ignore
-                        setAcceptedFiles(filesWithBase64);
-                      }}
-                    />
-                    <p>Arraste e solte algumas fotos aqui ou clique para selecionar.</p>
+                  <input
+  ref={dropzoneInputRef}
+  {...getRootProps()}
+  onChange={(event) => {
+    const files = event.target.files;
+    //@ts-ignore
+    const filesWithBase64 = Array.from(files).map(file => ({
+      path: file.name,
+      base64: URL.createObjectURL(file)
+    }));
+    //@ts-ignore
+    setAcceptedFiles(filesWithBase64);
+  }}
+/>
+
+<p onClick={openDropzone}>Arraste e solte algumas fotos aqui ou clique para selecionar.</p>
                     {acceptedFiles.length > 0 && (
                       <p>{`Fotos adicionadas: ${acceptedFiles.length}`}</p>
                     )}
